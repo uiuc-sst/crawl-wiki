@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Top-level script to make files wikipedia/xx/yyyymmdd.txt.
+#
+# Author: Camille Goudeseune, 2016-05-22
+
+date=`date +%Y%m%d`
+
+# Scrape the data.  This takes about 20 minutes.
+for lang in $(cat sbs-wikipedia-lang-code); do
+    mkdir -p wikipedia/$lang
+    ./crawl_wikipedia.py $lang > wikipedia/$lang/$date.content 2> wikipedia/$lang/$date.log &
+done
+wait
+
+# Tidying in parallel eventually needs over 64 GB RAM, for the half dozen largest ones.
+# The largest few need 20 to 32 GB *each*.
+# If you don't have that much RAM, omit the & to create each .txt file one at a time.
+for lang in $(cat sbs-wikipedia-lang-code); do
+    ././wiki-tidy.py < wikipedia/$lang/$date.content > wikipedia/$lang/$date.txt &
+done
+wait
