@@ -14,7 +14,7 @@ done
 wait
 
 # Tidying in parallel eventually needs over 64 GB RAM, for the half dozen largest ones.
-# The largest few need 20 to 32 GB *each*.
+# The largest few need at least 34 GB *each*.
 # If you don't have that much RAM, omit the & to create each .txt file one at a time.
 for lang in $(cat sbs-wikipedia-lang-code); do
     ././wiki-tidy.py < wikipedia/$lang/$date.content > wikipedia/$lang/$date.txt &
